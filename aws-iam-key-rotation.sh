@@ -1,5 +1,4 @@
 #!/bin/bash
-set -o errexit
 cat << "EOF"
  #    #    #     #    #    # ####### #     #    ######  ####### #######    #    ####### ### ####### #     # 
  #   # #   ##   ##    #   #  #        #   #     #     # #     #    #      # #      #     #  #     # ##    # 
@@ -41,12 +40,19 @@ function main() {
                 CREATE_NEW_KEY=$(aws iam create-access-key --user-name $USER_NAME --profile $PROFILE | jq -r '[.AccessKey.AccessKeyId, .AccessKey.SecretAccessKey]')
                 array=($CREATE_NEW_KEY)
                 echo "Setting up AWS CLI config in .aws/credentials"
+                GET_OLD_REGION=$(aws configure get region --profile $PROFILE)
+                if [[ "$GET_OLD_REGION" != "" ]]; then
+                    echo "Region retrived from old cfg:" $GET_OLD_REGION
+                else
+                    GET_OLD_REGION='us-east-1'
+                    echo "Region of old config couldn't be found, setting us-east-1 as default"
+                fi
                 ACCESS_KEY=$(echo "${array[1]}" | sed 's/"//g' | sed 's/,//g')
                 echo "NEW Access KEY generated:" $ACCESS_KEY
                 SECRET_ACCESS_KEY=$(echo "${array[2]}" | sed 's/"//g')
                 SET_ACCESS_KEY=$(aws configure set aws_access_key_id $ACCESS_KEY --profile $PROFILE)
                 SET_SECRETACCESS_KEY=$(aws configure set aws_secret_access_key $SECRET_ACCESS_KEY --profile $PROFILE)
-                SET_REGION=$(aws configure set region eu-west-2 --profile $PROFILE)
+                SET_REGION=$(aws configure set region $GET_OLD_REGION --profile $PROFILE)
                 echo "AWS CLI configured successfully! yayy"
                 removeKey
             fi
