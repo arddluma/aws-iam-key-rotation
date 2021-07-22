@@ -1,6 +1,11 @@
 # aws-iam-key-rotation
 Rotate your IAM keys automatically
 
+***Prerequisites***
+
+- awscli (https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
+- jq (Ubuntu: sudo apt-get install -y jq / MacOS: brew install jq)
+
 Usage: `./aws-iam-key-rotation.sh <aws-cli-profile> <iam-user-name>`
 
 Run as a cronjob:
