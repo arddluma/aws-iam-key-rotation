@@ -15,7 +15,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 PROFILE=$1
 USER_NAME=$2
 AWS_CLI_PATH=$(command -v aws)
+DATE=$(date)
 function main() {
+        echo "Date:" $DATE
         echo "Profile set:" $PROFILE
         echo -e "Username set:" $USER_NAME "\n"
         if [ ! -x $AWS_CLI_PATH ]; then
